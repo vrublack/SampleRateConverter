@@ -6,13 +6,13 @@ __author__ = 'Valentin'
 
 
 def main():
-    if len(sys.argv) <= 1:
-        print('Error: Path as argument expected')
+    if len(sys.argv) != 3:
+        print('Error: Path as 1st and target sample rate as 2nd argument expected')
         quit()
     filename = sys.argv[1]
+    target_sample_rate = float(sys.argv[2])
     readings = file_handler.read_file(filename)
     print("Loaded")
-    target_sample_rate = 1000
     converter = SampleRateConverter(target_sample_rate)
     converted_readings = converter.convert(readings)
     print("Converted")
