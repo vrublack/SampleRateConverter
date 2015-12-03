@@ -1,3 +1,4 @@
+import sys
 import file_handler
 from sample_rate_converter import SampleRateConverter
 
@@ -5,10 +6,13 @@ __author__ = 'Valentin'
 
 
 def main():
-    filename = '/home/pi/acquisitions/readings'
+    if len(sys.argv) <= 1:
+        print('Error: Path as argument expected')
+        quit()
+    filename = sys.argv[1]
     readings = file_handler.read_file(filename)
     print("Loaded")
-    target_sample_rate = 100
+    target_sample_rate = 1000
     converter = SampleRateConverter(target_sample_rate)
     converted_readings = converter.convert(readings)
     print("Converted")
