@@ -1,5 +1,6 @@
 import sys
-import file_handler
+from file_reader import FileReader
+from file_writer import FileWriter
 from sample_rate_converter import SampleRateConverter
 
 __author__ = 'Valentin'
@@ -11,13 +12,29 @@ def main():
         quit()
     filename = sys.argv[1]
     target_sample_rate = float(sys.argv[2])
-    readings = file_handler.read_file(filename)
-    print("Loaded")
+
+    file_reader = FileReader(filename)
+    file_writer = FileWriter(filename + '@' + str(target_sample_rate) + 'hz')
     converter = SampleRateConverter(target_sample_rate)
-    converted_readings = converter.convert(readings)
-    print("Converted")
-    file_handler.write_file(filename + '@' + str(target_sample_rate) + 'hz', converted_readings)
+
+    increment = (1000.0 / target_sample_rate) * 1000
+    current_time_limit = 0 + increment  # in ms
+    count = 0
+    while True:
+        reading_chunk = file_reader.read_next_chunk(current_time_limit)
+        if len(reading_chunk) == 0:
+            break
+        converted_chunk = converter.convert(reading_chunk)
+        file_writer.write_next_chunk(converted_chunk)
+
+        current_time_limit += increment
+
+        count += 1
+        if count % 1 == 0:
+            print('Iteration ' + str(count))
+
     print("Done.")
+
 
 if __name__ == '__main__':
     main()
