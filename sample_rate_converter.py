@@ -1,5 +1,6 @@
 from AbstractSegment import AbstractSegment
 from AverageSegment import AverageSegment
+from CenterPointSegment import CenterPointSegment
 from RandomizedSegment import RandomizedSegment
 from sensor_reading import SensorReading
 
@@ -68,6 +69,9 @@ class SampleRateConverter:
                                             self.increment_ms)
             elif self.combination_strategy == 'average':
                 segment = AverageSegment(sensor_type, reading_time - reading_time % self.increment_ms,
+                                         self.increment_ms)
+            elif self.combination_strategy == 'center-point':
+                segment = CenterPointSegment(sensor_type, reading_time - reading_time % self.increment_ms,
                                          self.increment_ms)
             else:
                 raise ValueError('Strategy must be either "random" or "average"')

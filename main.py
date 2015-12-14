@@ -7,32 +7,41 @@ __author__ = 'Valentin'
 
 
 def main():
-    if len(sys.argv) != 4:
-        print('Error: Path as 1st, target sample rate as 2nd and "average" or "random" as 3rd argument expected')
+    usage = "[path] [strategy] [target sample rate 1] ... [target sample rate n]"
+    if len(sys.argv) < 4:
+        print('Wrong number of arguments. Usage: ' + usage)
         quit()
     filename = sys.argv[1]
-    target_sample_rate = float(sys.argv[2])
-    combination_strategy = sys.argv[3]
+    combination_strategy = sys.argv[2]
 
-    file_reader = FileReader(filename)
-    file_writer = FileWriter(filename + '@' + str(target_sample_rate) + 'hz')
-    converter = SampleRateConverter(target_sample_rate, combination_strategy)
+    target_sample_rates = []
+    target_sample_rates.append(float(sys.argv[3]))
+    for i in range(4, len(sys.argv)):
+        target_sample_rates.append(float(sys.argv[i]))
 
-    increment = (1000.0 / target_sample_rate) * 1000
-    current_time_limit = 0 + increment  # in ms
-    count = 0
-    while True:
-        reading_chunk = file_reader.read_next_chunk(current_time_limit)
-        if len(reading_chunk) == 0:
-            break
-        converted_chunk = converter.convert(reading_chunk)
-        file_writer.write_next_chunk(converted_chunk)
+    for target_sample_rate in target_sample_rates:
 
-        current_time_limit += increment
+        print('Converting to ' + str(target_sample_rate) + ' hz')
 
-        count += 1
-        if count % 1 == 0:
-            print('Iteration ' + str(count))
+        file_reader = FileReader(filename)
+        file_writer = FileWriter(filename + '@' + str(target_sample_rate) + 'hz')
+        converter = SampleRateConverter(target_sample_rate, combination_strategy)
+
+        increment = (1000.0 / target_sample_rate) * 1000
+        current_time_limit = 0 + increment  # in ms
+        count = 0
+        while True:
+            reading_chunk = file_reader.read_next_chunk(current_time_limit)
+            if len(reading_chunk) == 0:
+                break
+            converted_chunk = converter.convert(reading_chunk)
+            file_writer.write_next_chunk(converted_chunk)
+
+            current_time_limit += increment
+
+            count += 1
+            if count % 1 == 0:
+                print('Iteration ' + str(count))
 
     print("Done.")
 
