@@ -7,15 +7,16 @@ __author__ = 'Valentin'
 
 
 def main():
-    if len(sys.argv) != 3:
-        print('Error: Path as 1st and target sample rate as 2nd argument expected')
+    if len(sys.argv) != 4:
+        print('Error: Path as 1st, target sample rate as 2nd and "average" or "random" as 3rd argument expected')
         quit()
     filename = sys.argv[1]
     target_sample_rate = float(sys.argv[2])
+    combination_strategy = sys.argv[3]
 
     file_reader = FileReader(filename)
     file_writer = FileWriter(filename + '@' + str(target_sample_rate) + 'hz')
-    converter = SampleRateConverter(target_sample_rate)
+    converter = SampleRateConverter(target_sample_rate, combination_strategy)
 
     increment = (1000.0 / target_sample_rate) * 1000
     current_time_limit = 0 + increment  # in ms
