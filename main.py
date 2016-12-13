@@ -7,7 +7,7 @@ __author__ = 'Valentin'
 
 
 def main():
-    usage = "[path] [strategy] [target sample rate 1] ... [target sample rate n]"
+    usage = "[path] [strategy] [target sample rate 1] ... [target sample rate n].\nFor example arguments, 'recording.csv center-point 500 25' convert recording.csv into both 500 and 25 hz using the center-point strategy.\nStrategies are random, average and center-point."
     if len(sys.argv) < 4:
         print('Wrong number of arguments. Usage: ' + usage)
         quit()
